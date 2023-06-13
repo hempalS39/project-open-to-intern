@@ -18,9 +18,9 @@ const createIntern = async function (req , res) {
 
     if(!isValid(name)) return res.status(400).send({status:false , message : "name is not valid"});
     // if(!isValidString(name)) return res.status(400).send({status:false , message : "name is not valid string"});
-    if(!isValidString(collegeName)) return res.status(400).send({status:false , message : "collegeName is not valid string"});
+    // if(!isValidString(collegeName)) return res.status(400).send({status:false , message : "collegeName is not valid string"});
     if(typeof email == 'number') return res.status(400).send({status : false , message : "email  not valid"});
-    // if(!validateEmail(email)) return res.status(400).send({status : false , message : "email is not valid"});
+    if(!validateEmail(email)) return res.status(400).send({status : false , message : "email is not valid"});
     if(!validateMobile(mobile)) return res.status(400).send({status : false , message : "mobile is not valid"});
     if(mobile.length !== 10) return res.status(400).send({status : false , message : "mobile should be of length 10"})
     //check if email is unique

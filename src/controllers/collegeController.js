@@ -2,7 +2,7 @@ const { status } = require('express/lib/response');
 const collegeModel = require('../models/collegeModel');
 const internModel = require('../models/internModel');
 const {isValid ,isValidString, validString} = require('../utils/validation')
-
+const axios = require('axios');
 
 
 //------------------------------------ API to create a college -------------------------------------------
@@ -19,10 +19,14 @@ const createCollege = async function (req, res) {
         // validating if the required fields are valid or not
         if (!isValid(name)) return res.status(400).send({ status: false, message: "name is not valid" });
         if (!isValid(fullName)) return res.status(400).send({ status: false, message: "fullName is not valid" });
-        if (!isValidString(name)) return res.status(400).send({ status: false, message: "name is not valid string" });
-        if (validString(fullName)) return res.status(400).send({ status: false, message: "fullName is not valid string" });
+        // if (!isValidString(name)) return res.status(400).send({ status: false, message: "name is not valid string" });
+        // if (validString(fullName)) return res.status(400).send({ status: false, message: "fullName is not valid string" });
         if (typeof logoLink !== 'string') return res.status(400).send({ status: false, message: "logoLink is not valid" });
-
+        try {
+            await axios.head(logoLink);
+          } catch (error) {
+            return res.status(400).send({ status: false, message: "Please provide a valid and accessible logoLink" });
+          }
         // check if collegeName is unique or not
         const isUniqueName = await collegeModel.findOne({ name: name, isDeleted: false });
         if (isUniqueName) {
@@ -58,7 +62,7 @@ const getCollegeWithInterns = async function (req, res) {
     try {
         const collegeName = req.query.collegeName;
         //validating if req body is empty 
-        if (Object.keys(req.query).length == 0) return res.status(400).send({ status: false, message: "pls provide collegeName in query" })
+        if (Object.keys(req.query).length == 0) return res.status(404).send({ status: false, message: "pls provide collegeName in query" })
         if (!isValid(collegeName)) return res.status(400).send({ status: false, message: "collegeName is not valid" });
 
         // find college with the collegeName
